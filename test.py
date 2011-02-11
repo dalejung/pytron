@@ -13,6 +13,15 @@ class Bark(object):
         self.last_barked = datetime.now()
         return self.woof
 
+class Clap(object):
+    def __init__(self):
+        self.last_clap = None
+        super(Clap, self).__init__()
+
+    def clap(self):
+        self.last_clap = datetime.now()
+        return 'claaaap'
+
 class Target(object):
     def __init__(self):
         self.created = datetime.now()
@@ -25,7 +34,7 @@ class TestExtend(unittest.TestCase):
         woof = 'W0000F'
         b = Bark(woof)
         t = Target()
-        pytron.extend(t,b)
+        pytron.interlock(t,b)
         self.assertTrue(hasattr(b,'bark'))
         self.assertTrue(hasattr(t,'bark'))
         self.assertEqual(t.bark(), woof)
@@ -33,15 +42,17 @@ class TestExtend(unittest.TestCase):
 
     def test_class_extend_object(self):
         b = Bark()
-        pytron.extend(Target,b)
+        pytron.interlock(Target,b)
         t = Target()
         self.assertTrue(hasattr(b,'bark'))
         self.assertTrue(hasattr(t,'bark'))
 
     def test_class_extend_class(self):
-        pytron.extend(Target,Bark)
+        pytron.interlock(Target,Bark)
+        pytron.interlock(Target,Clap)
         t = Target()
         self.assertTrue(hasattr(t,'bark'))
+        self.assertTrue(hasattr(t,'clap'))
 
 def run():
     unittest.main()
