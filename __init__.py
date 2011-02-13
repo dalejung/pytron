@@ -1,5 +1,4 @@
 import inspect
-import types
 
 def interlock(base, addition):
     if inspect.isclass(addition):
@@ -8,6 +7,16 @@ def interlock(base, addition):
         e = Extender()
 
     e.extend(base, addition)
+
+class interlock_with(object):
+    def __init__(self, *args):
+        self.classes = args
+
+    def __call__(self, cls):
+        for klass in self.classes:
+            interlock(cls, klass)
+
+        return cls
 
 def wrap_init(base, new_init):
     """
